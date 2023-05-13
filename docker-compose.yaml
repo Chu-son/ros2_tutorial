@@ -1,0 +1,98 @@
+version: "3"
+services:
+  ros2:
+    container_name: ros2
+    image: ros2_tutorial
+    build:
+      context: .
+      dockerfile: "docker/Dockerfile"
+
+    tty: true
+    network_mode: "host"
+    privileged: true
+    environment:
+      - DISPLAY=${DISPLAY}
+      - PYTHONUNBUFFERED=1
+
+    env_file:
+      - .env
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $HOME/.Xauthority/:/root/.Xauthority
+      - ./:/app/
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    command: "/app/docker/docker-entrypoint.sh"
+
+  ros2_foxy:
+    container_name: ros2_foxy
+    image: ros2_tutorial_foxy
+    build:
+      context: .
+      dockerfile: "docker/Dockerfile.base"
+      args:
+        ROS_DISTRO: foxy
+
+    tty: true
+    network_mode: "host"
+    privileged: true
+    environment:
+      - DISPLAY=${DISPLAY}
+      - PYTHONUNBUFFERED=1
+
+    env_file:
+      - .env
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $HOME/.Xauthority/:/root/.Xauthority
+      - ./:/app/
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    command: "/app/docker/docker-entrypoint.sh"
+
+  ros2_humble:
+    container_name: ros2_humble
+    image: ros2_tutorial_humble
+    build:
+      context: .
+      dockerfile: "docker/Dockerfile.base"
+      args:
+        ROS_DISTRO: humble
+
+    tty: true
+    network_mode: "host"
+    privileged: true
+    environment:
+      - DISPLAY=${DISPLAY}
+      - PYTHONUNBUFFERED=1
+
+    env_file:
+      - .env
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $HOME/.Xauthority/:/root/.Xauthority
+      - ./:/app/
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    command: "/app/docker/docker-entrypoint.sh"
